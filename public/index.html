@@ -19,6 +19,33 @@
     <button onclick="searchProducts()">Поиск</button>
   </div>
   <div id="product-list"></div>
-  <script src="script.js"></script>
+  <script>
+    function searchProducts() {
+      const query = document.getElementById('search-input').value;
+      fetch(`/api/products?search=${query}`)
+        .then(response => response.json())
+        .then(data => {
+          const productList = document.getElementById('product-list');
+          productList.innerHTML = '';
+          data.forEach(product => {
+            const productItem = document.createElement('div');
+            productItem.innerHTML = `
+              <div>
+                <strong>SKU:</strong> ${product['SKU']}<br>
+                <strong>Brand:</strong> ${product['Brand']}<br>
+                <strong>Name:</strong> ${product['Name']}<br>
+                <strong>Quantity:</strong> ${product['Quantity']}<br>
+                <strong>Price:</strong> ${product['Price']}
+              </div>
+              <hr>
+            `;
+            productList.appendChild(productItem);
+          });
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+  </script>
 </body>
 </html>
