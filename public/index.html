@@ -20,14 +20,6 @@
   </div>
   <div id="product-list" class="product-list"></div>
 
-  <!-- Модальное окно -->
-  <div id="myModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <div id="modal-product-details"></div>
-    </div>
-  </div>
-
   <script>
     function searchProducts() {
       const query = document.getElementById('search-input').value;
@@ -39,7 +31,7 @@
           data.forEach(product => {
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
-            productCard.onclick = () => openModal(product);
+            productCard.onclick = () => window.location.href = `product.html?sku=${product['SKU']}`;
             const shortName = product['Name'].length > 50 ? product['Name'].substring(0, 50) + '...' : product['Name'];
             const imageUrl = product['URL-image'] || 'placeholder.jpg'; // Убедимся, что URL изображения доступен
             productCard.innerHTML = `
@@ -57,27 +49,6 @@
         .catch(error => {
           console.error('Error:', error);
         });
-    }
-
-    function openModal(product) {
-      const modal = document.getElementById('myModal');
-      const modalContent = document.getElementById('modal-product-details');
-      const imageUrl = product['URL-image'] || 'placeholder.jpg'; // Убедимся, что URL изображения доступен
-      modalContent.innerHTML = `
-        <img src="${imageUrl}" alt="${product['Name']}" style="width: 100%; border-radius: 10px; margin-bottom: 10px;">
-        <strong>SKU:</strong> ${product['SKU']}<br>
-        <strong>Brand:</strong> ${product['Brand']}<br>
-        <strong>Name:</strong> ${product['Name']}<br>
-        <strong>Quantity:</strong> ${product['Quantity']}<br>
-        <strong>Price:</strong> ${product['Price']}<br>
-        <button onclick="addToCart('${product['SKU']}')">В корзину</button>
-      `;
-      modal.style.display = 'block';
-    }
-
-    function closeModal() {
-      const modal = document.getElementById('myModal');
-      modal.style.display = 'none';
     }
 
     function addToCart(sku) {

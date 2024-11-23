@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="logo">My B2B Website</div>
+    <div class="auth-links">
+      <a href="#">Вход</a>
+      <a href="#">Регистрация</a>
+    </div>
+  </header>
+  <div id="product-details" class="product-details"></div>
+
+  <script>
+    function getProductDetails() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const sku = urlParams.get('sku');
+      fetch(`/api/products?search=${sku}`)
+        .then(response => response.json())
+        .then(data => {
+          const product = data[0]; // Предполагаем, что SKU уникален и вернется только один товар
+          const productDetails = document.getElementById('product-details');
+          const imageUrl = product['URL-image'] || 'placeholder.jpg';
+          productDetails.innerHTML = `
+            <img src="${imageUrl}" alt="${product['Name']}" style="width: 100%; border-radius: 10px; margin-bottom: 10px;">
+            <strong>SKU:</strong> ${product['SKU']}<br>
+            <strong>Brand:</strong> ${product['Brand']}<br>
+            <strong>Name:</strong> ${product['Name']}<br>
+            <strong>Quantity:</strong> ${product['Quantity']}<br>
+            <strong>Price:</strong> ${product['Price']}<br>
+            <button onclick="addToCart('${product['SKU']}')">В корзину</button>
+          `;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+    function addToCart(sku) {
+      alert(`Product with SKU ${sku} added to cart!`);
+    }
+
+    window.onload = getProductDetails;
+  </script>
+</body>
+</html>

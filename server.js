@@ -11,6 +11,10 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+app.get('/product.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'product.html'));
+});
+
 // Новый маршрут для обработки поисковых запросов
 app.get('/api/products', (req, res) => {
     const searchQuery = req.query.search.toLowerCase();
@@ -29,6 +33,7 @@ app.get('/api/products', (req, res) => {
             res.status(500).json({ error: err.message });
             return;
         }
+        console.log('Rows:', rows); // Отладочная информация
         res.json(rows);
     });
 });
