@@ -5,6 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My B2B Website</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Добавим стили для карточек товаров */
+    .product-card {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 15px;
+      margin: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: inline-block;
+      width: calc(33.333% - 20px);
+      box-sizing: border-box;
+    }
+    .product-card strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .product-card hr {
+      margin: 10px 0;
+    }
+    .product-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -18,7 +43,7 @@
     <input type="text" id="search-input" placeholder="Поиск товаров...">
     <button onclick="searchProducts()">Поиск</button>
   </div>
-  <div id="product-list"></div>
+  <div id="product-list" class="product-list"></div>
   <script>
     function searchProducts() {
       const query = document.getElementById('search-input').value;
@@ -28,18 +53,16 @@
           const productList = document.getElementById('product-list');
           productList.innerHTML = '';
           data.forEach(product => {
-            const productItem = document.createElement('div');
-            productItem.innerHTML = `
-              <div>
-                <strong>SKU:</strong> ${product['SKU']}<br>
-                <strong>Brand:</strong> ${product['Brand']}<br>
-                <strong>Name:</strong> ${product['Name']}<br>
-                <strong>Quantity:</strong> ${product['Quantity']}<br>
-                <strong>Price:</strong> ${product['Price']}
-              </div>
-              <hr>
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card';
+            productCard.innerHTML = `
+              <strong>SKU:</strong> ${product['SKU']}
+              <strong>Brand:</strong> ${product['Brand']}
+              <strong>Name:</strong> ${product['Name']}
+              <strong>Quantity:</strong> ${product['Quantity']}
+              <strong>Price:</strong> ${product['Price']}
             `;
-            productList.appendChild(productItem);
+            productList.appendChild(productCard);
           });
         })
         .catch(error => {
