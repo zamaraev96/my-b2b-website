@@ -5,31 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My B2B Website</title>
   <link rel="stylesheet" href="styles.css">
-  <style>
-    /* Добавим стили для карточек товаров */
-    .product-card {
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      padding: 15px;
-      margin: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      display: inline-block;
-      width: calc(33.333% - 20px);
-      box-sizing: border-box;
-    }
-    .product-card strong {
-      display: block;
-      margin-bottom: 5px;
-    }
-    .product-card hr {
-      margin: 10px 0;
-    }
-    .product-list {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-    }
-  </style>
 </head>
 <body>
   <header>
@@ -44,6 +19,15 @@
     <button onclick="searchProducts()">Поиск</button>
   </div>
   <div id="product-list" class="product-list"></div>
+
+  <!-- Модальное окно -->
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <div id="modal-product-details"></div>
+    </div>
+  </div>
+
   <script>
     function searchProducts() {
       const query = document.getElementById('search-input').value;
@@ -55,12 +39,17 @@
           data.forEach(product => {
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
+            productCard.onclick = () => openModal(product);
+            const shortName = product['Name'].length > 50 ? product['Name'].substring(0, 50) + '...' : product['Name'];
+            const imageUrl = product['URL-image'] || 'placeholder.jpg'; // Убедимся, что URL изображения доступен
             productCard.innerHTML = `
+              <img src="${imageUrl}" alt="${product['Name']}">
               <strong>SKU:</strong> ${product['SKU']}
               <strong>Brand:</strong> ${product['Brand']}
-              <strong>Name:</strong> ${product['Name']}
+              <strong>Name:</strong> ${shortName}
               <strong>Quantity:</strong> ${product['Quantity']}
               <strong>Price:</strong> ${product['Price']}
+              <button onclick="addToCart('${product['SKU']}'); event.stopPropagation();">В корзину</button>
             `;
             productList.appendChild(productCard);
           });
@@ -68,6 +57,31 @@
         .catch(error => {
           console.error('Error:', error);
         });
+    }
+
+    function openModal(product) {
+      const modal = document.getElementById('myModal');
+      const modalContent = document.getElementById('modal-product-details');
+      const imageUrl = product['URL-image'] || 'placeholder.jpg'; // Убедимся, что URL изображения доступен
+      modalContent.innerHTML = `
+        <img src="${imageUrl}" alt="${product['Name']}" style="width: 100%; border-radius: 10px; margin-bottom: 10px;">
+        <strong>SKU:</strong> ${product['SKU']}<br>
+        <strong>Brand:</strong> ${product['Brand']}<br>
+        <strong>Name:</strong> ${product['Name']}<br>
+        <strong>Quantity:</strong> ${product['Quantity']}<br>
+        <strong>Price:</strong> ${product['Price']}<br>
+        <button onclick="addToCart('${product['SKU']}')">В корзину</button>
+      `;
+      modal.style.display = 'block';
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('myModal');
+      modal.style.display = 'none';
+    }
+
+    function addToCart(sku) {
+      alert(`Product with SKU ${sku} added to cart!`);
     }
   </script>
 </body>
